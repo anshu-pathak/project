@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://padmin:anshu@1403@localhost/import_files'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+://padmin:anshu@1403@localhost/import_files'
 app.config['SECRET_KEY'] = 'f495b66803a6512d'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -29,4 +29,4 @@ api.add_resource(CSVTable, '/upload')
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(debug=True, port=6000 )
+    app.run(debug=True, port=5000 )
