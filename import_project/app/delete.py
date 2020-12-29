@@ -17,6 +17,11 @@ class DeleteTable(Resource):
         print("the name is ", query)
         
         db.session.execute(query)
+
+        # tble_exist = ImportModel.query.filter_by(display_name=name).first()
+        # sql = "SELECT id FROM master_table WHERE name = " + name
+
+        db.session.execute(sql)
         
         db.session.commit()
         return {"message": name +" table deleted successfully."}
