@@ -1,27 +1,43 @@
 from flask import Flask, request,Response
 from flask_restful import Api, Resource
 import pymysql
+from .model import ImportModel, ColumnTable
 from app import db
-
 
 
 
 class DeleteTable(Resource):
     
-    def post(self):
+    def delete(self,id):
+        imd = request.args
+        lay = dict(request.args)
+        payload = imd.to_dict(flat=False)
 
-        req = request.form
-        print("the request form is ", )
-        name = req['name']
-        query = "DROP TABLE IF EXISTS " + name
-        print("the name is ", query)
-        
-        db.session.execute(query)
+        import_table = ImportModel.query.get(id)
 
-        # tble_exist = ImportModel.query.filter_by(display_name=name).first()
-        # sql = "SELECT id FROM master_table WHERE name = " + name
+        if import_table is None:
+            return {"message": 'NOT_EXISTS'}, 422
+        else:
+            tbl_name = import_table.name
+            
+            q = 'DELETE FROM master_table WHERE name ='+ "'" + tbl_name + "'"
+            db.session.execute(q)
+            db.session.commit()
 
-        db.session.execute(sql)
-        
-        db.session.commit()
-        return {"message": name +" table deleted successfully."}
+            # delete columns
+            qq = 'DELETE FROM columns_tbl WHERE tab_id =' + str(id) 
+            db.session.execute(qq)
+            db.session.commit()
+            dropTable(tbl_name)
+        return {"message": 'Deleted Successfully'}, 200
+
+
+
+def dropTable(tb_name):
+    query = "DROP TABLE IF EXISTS " + tb_name
+    db.session.execute(query)
+    db.session.commit()
+    return
+
+
+
